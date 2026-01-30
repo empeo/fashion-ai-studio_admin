@@ -17,7 +17,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
   onClear,
   label,
   lang = "en",
-  maxSizeMB = 10,
+  maxSizeMB = 30,
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [localError, setLocalError] = useState<string | null>(null);
