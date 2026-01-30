@@ -241,240 +241,243 @@ export const translations = {
       },
       {
         id: "pose_11",
-        name: "Over the Shoulder",
+        name: "Three-Quarter Pose",
         prompt:
-          "looking back over the shoulder, dramatic neck turn, mysterious gaze, emphasizing back details",
+          "in a three-quarter pose, body angled at 45 degrees, showcasing dimension and depth, balanced composition",
       },
       {
         id: "pose_12",
-        name: "Seated Floor",
+        name: "Crossed Legs Pose",
         prompt:
-          "elegantly seated on the floor, legs gracefully folded, sophisticated relaxed posture",
+          "standing with legs crossed at ankles, sophisticated stance, classic elegance and poise",
       },
       {
         id: "pose_13",
-        name: "Architectural Lean",
-        prompt:
-          "leaning against a wall, architectural body lines, geometric limb positioning",
-      },
-      {
-        id: "pose_14",
-        name: "Walking Dynamic",
-        prompt:
-          "in a dynamic walking pose, forward motion, natural leg extension, fabric flowing",
-      },
-      {
-        id: "pose_15",
-        name: "The S Curve",
+        name: "S-Curve Pose",
         prompt:
           "with a dramatic S-curve body silhouette, highly editorial, emphasizing curves and fluidity",
       },
       {
-        id: "pose_16",
-        name: "Hand on Chin",
+        id: "pose_14",
+        name: "Hand Near Mouth Pose",
         prompt:
-          "with one hand gently touching the chin, contemplative beauty pose, refined expression",
+          "with hand delicately positioned near mouth, contemplative beauty shot, refined sensual gesture",
+      },
+      {
+        id: "pose_15",
+        name: "Sitting on the Floor Pose",
+        prompt:
+          "elegantly seated on the floor, legs gracefully folded, sophisticated relaxed posture",
+      },
+      {
+        id: "pose_16",
+        name: "Motion Pose",
+        prompt:
+          "captured in dynamic motion, fabric and hair flowing, energetic movement, kinetic editorial energy",
       },
       {
         id: "pose_17",
-        name: "Back to Camera",
+        name: "Defined Jawline Pose",
         prompt:
-          "facing away from the camera, showing back silhouette, head turned slightly, strong spinal alignment",
+          "head positioned to emphasize jawline, chin slightly lifted, strong facial definition, editorial precision",
       },
       {
         id: "pose_18",
-        name: "Crouching Editorial",
+        name: "Arched Back Pose",
         prompt:
-          "in a high-fashion crouching position, knees bent, edgy avant-garde posture",
+          "with back gracefully arched, spine elongated, dramatic body curve, avant-garde posture",
       },
       {
         id: "pose_19",
-        name: "Arms Crossed High",
+        name: "Hand on Shoulder Pose",
         prompt:
-          "standing with arms crossed high, defensive yet powerful stance, intense gaze",
+          "with one hand resting on opposite shoulder, elegant arm positioning, refined beauty shot",
       },
       {
         id: "pose_20",
-        name: "Running Motion",
+        name: "Head Tilt Pose",
         prompt:
-          "captured mid-run, hair and fabric in motion, energetic and fast-paced editorial",
+          "head tilted to one side, soft neck angle, gentle contemplative expression, natural charm",
       },
       {
         id: "pose_21",
-        name: "One Knee Up",
+        name: "Walking Pose",
         prompt:
-          "standing with one leg raised, knee bent, dynamic and playful fashion stance",
+          "in a dynamic walking pose, forward motion, natural leg extension, fabric flowing with movement",
       },
       {
         id: "pose_22",
-        name: "Lounging Luxury",
+        name: "Arms Raised Pose",
         prompt:
-          "reclining on a luxury surface, relaxed effortless elegance, high-end lifestyle mood",
+          "with arms raised elegantly overhead, elongated silhouette, dance-inspired grace and freedom",
       },
       {
         id: "pose_23",
-        name: "Tucked Chin",
+        name: "Environmental Interaction Pose",
         prompt:
-          "with chin slightly tucked, looking up through lashes, mysterious and soft gaze",
+          "interacting naturally with surroundings, leaning on props, authentic lifestyle editorial mood",
       },
       {
         id: "pose_24",
-        name: "Wide Arm Stretch",
+        name: "Face Touch Pose",
         prompt:
-          "with arms spread wide, capturing space, open and free editorial movement",
+          "fingers delicately touching face, hand near cheekbone or chin, beauty-focused intimate gesture",
       },
       {
         id: "pose_25",
-        name: "Static Statue",
+        name: "Reclining Pose",
         prompt:
-          "standing perfectly still, neutral expression, minimalist high-fashion editorial",
+          "reclining on a surface, relaxed elongated body position, luxurious editorial elegance",
       },
       {
         id: "pose_26",
-        name: "Shoulder Shrug",
+        name: "Casual Sitting Pose",
         prompt:
-          "with shoulders slightly raised, playful and casual, effortless cool",
+          "sitting casually, relaxed natural posture, effortless lifestyle editorial vibe",
       },
       {
         id: "pose_27",
-        name: "Holding Necklace",
+        name: "Back Pose",
         prompt:
-          "delicately holding a necklace, jewelry-focused beauty shot, refined hand placement",
+          "facing away from camera, showing back silhouette, head may turn slightly, emphasizing spinal alignment and garment back details",
       },
       {
         id: "pose_28",
-        name: "Dance Flow",
+        name: "Leaning Against the Wall Pose",
         prompt:
-          "captured mid-movement, fluid dance-inspired pose, fabric swirling, graceful energy",
+          "leaning casually against a wall, architectural body lines, relaxed confident attitude",
       },
       {
         id: "pose_29",
-        name: "Leaning on Chair",
+        name: "Hands Clasped in Front Pose",
         prompt:
-          "leaning casually on a chair back, relaxed editorial vibe, sophisticated ease",
+          "with hands clasped together in front of body, composed elegant stance, refined posture",
       },
       {
         id: "pose_30",
-        name: "Hands on Waist",
+        name: "One Leg Forward Pose",
         prompt:
-          "with both hands on the waist, defined silhouette, confident body language",
+          "standing with one leg stepped forward, dynamic weight distribution, editorial movement suggestion",
       },
       {
         id: "pose_31",
-        name: "Side Profile",
+        name: "Chin Down Eyes Up Pose",
         prompt:
-          "in strict side profile, showcasing facial silhouette, strong jawline, editorial precision",
+          "chin tucked down while eyes look up through lashes, mysterious soft gaze, intimate beauty shot",
       },
       {
         id: "pose_32",
-        name: "Elegant Kneeling",
+        name: "Elbow on Knee Pose",
         prompt:
-          "kneeling gracefully, upright posture, refined and poised, high-fashion elegance",
+          "sitting with elbow resting on knee, thoughtful casual posture, editorial ease",
       },
       {
         id: "pose_33",
-        name: "Wind-Blown",
+        name: "Knees Up Sitting Pose",
         prompt:
-          "hair and fabric blowing in the wind, dynamic movement, cinematic outdoor energy",
+          "sitting with knees drawn up, arms wrapped around legs, intimate relaxed editorial mood",
       },
       {
         id: "pose_34",
-        name: "Casual Cool",
+        name: "One Leg Bent Sitting Pose",
         prompt:
-          "standing casually, one hand in pocket, relaxed modern vibe, effortless style",
+          "sitting with one leg bent and one extended, asymmetrical composition, natural elegance",
       },
       {
         id: "pose_35",
-        name: "L-Pose Seated",
+        name: "Couch Sitting Pose",
         prompt:
-          "seated with legs extended in an L-shape, geometric composition, contemporary editorial",
+          "sitting on couch or sofa, relaxed luxury lifestyle pose, sophisticated ease",
       },
       {
         id: "pose_36",
-        name: "Framing Face",
+        name: "Elegant Reclining Pose",
         prompt:
-          "hands framing the face, fingers near cheekbones, beauty editorial focus",
+          "reclining with refined posture, elongated body lines, high-fashion luxury mood",
       },
       {
         id: "pose_37",
-        name: "Limb Extension",
+        name: "Back View with Arms Behind Pose",
         prompt:
-          "with one arm or leg dramatically extended, architectural body lines, avant-garde posture",
+          "back to camera with arms positioned behind body, elegant back details, mysterious silhouette",
       },
       {
         id: "pose_38",
-        name: "Natural Laugh",
+        name: "Mirror Pose",
         prompt:
-          "captured mid-laugh, genuine expression, lifestyle editorial authenticity",
+          "interacting with mirror, hand touching reflective surface, artistic editorial composition",
       },
       {
         id: "pose_39",
-        name: "Mirror Touch",
+        name: "Legs Apart Sitting Pose",
         prompt:
-          "hand touching a mirror surface, reflective composition, artistic editorial mood",
+          "sitting with legs positioned apart, strong confident seated posture, editorial power",
       },
       {
         id: "pose_40",
-        name: "Runway Spin",
+        name: "Stair Sitting Pose",
         prompt:
-          "captured mid-spin, fabric flowing outward, runway energy, dynamic rotation",
+          "sitting on stairs or steps, casual architectural setting, relaxed editorial vibe",
       },
       {
         id: "pose_41",
-        name: "Formal Bow",
+        name: "Arms Crossed Pose",
         prompt:
-          "in a slight bow, respectful elegant posture, high-fashion grace",
+          "standing with arms crossed, confident defensive stance, strong body language",
       },
       {
         id: "pose_42",
-        name: "Crossed Legs Standing",
+        name: "Stretching Pose",
         prompt:
-          "standing with legs crossed at ankles, sophisticated stance, classic elegance",
+          "body in stretching position, arms or legs extended, dynamic athletic editorial energy",
       },
       {
         id: "pose_43",
-        name: "Shadow Play",
+        name: "Elegant Hand Pose",
         prompt:
-          "interacting with dramatic shadows, artistic editorial, mysterious mood",
+          "hands positioned elegantly, refined finger placement, beauty and jewelry-focused shot",
       },
       {
         id: "pose_44",
-        name: "Head Back",
+        name: "Profile Pose",
         prompt:
-          "head tilted back, neck elongated, dramatic upward gaze, editorial intensity",
+          "in strict side profile, showcasing facial silhouette, strong jawline and nose line, editorial precision",
       },
       {
         id: "pose_45",
-        name: "Self-Embrace",
+        name: "Elbow Lean Pose",
         prompt:
-          "arms wrapped around oneself, introspective mood, emotional editorial depth",
+          "leaning on elbow, relaxed editorial posture, casual sophisticated ease",
       },
       {
         id: "pose_46",
-        name: "Floating Jump",
+        name: "Leg Up Against the Wall Pose",
         prompt:
-          "captured mid-jump, weightless moment, hair and fabric suspended, dynamic fashion",
+          "with one leg raised against wall, dynamic playful pose, editorial energy and movement",
       },
       {
         id: "pose_47",
-        name: "One Arm Up",
+        name: "Angled Shoulder Pose",
         prompt:
-          "one arm raised elegantly overhead, elongated silhouette, dance-inspired grace",
+          "shoulders positioned at angle, one shoulder forward, dynamic composition and dimension",
       },
       {
         id: "pose_48",
-        name: "Adjusting Glasses",
-        prompt: "fingers adjusting sunglasses, cool accessory-focused posture",
+        name: "Hand on Outfit Pose",
+        prompt:
+          "hand touching or adjusting outfit, fashion detail focus, refined gesture",
       },
       {
         id: "pose_49",
-        name: "Tiptoe Lean",
-        prompt: "leaning forward on tiptoes, sense of curiosity and tension",
+        name: "Over-the-Shoulder Look Pose",
+        prompt:
+          "looking back over shoulder, dramatic neck turn, mysterious gaze, emphasizing back and shoulder details",
       },
       {
         id: "pose_50",
-        name: "Zen Minimal",
-        prompt: "perfectly centered, hands at sides, calm and empty expression",
+        name: "Relaxed Arm Pose",
+        prompt:
+          "arms hanging naturally and relaxed, effortless natural posture, minimalist editorial ease",
       },
     ],
 
@@ -706,46 +709,46 @@ export const translations = {
       { id: "pose_8", name: "الكتفان للأمام", prompt: "" },
       { id: "pose_9", name: "كونترابوستو", prompt: "" },
       { id: "pose_10", name: "النظر بعيداً", prompt: "" },
-      { id: "pose_11", name: "فوق الكتف", prompt: "" },
-      { id: "pose_12", name: "جلوس على الأرض", prompt: "" },
-      { id: "pose_13", name: "ميل معماري", prompt: "" },
-      { id: "pose_14", name: "مشي ديناميكي", prompt: "" },
-      { id: "pose_15", name: "انحناء S", prompt: "" },
-      { id: "pose_16", name: "يد على الذقن", prompt: "" },
-      { id: "pose_17", name: "الظهر للكاميرا", prompt: "" },
-      { id: "pose_18", name: "قرفصاء تحريرية", prompt: "" },
-      { id: "pose_19", name: "أذرع متقاطعة", prompt: "" },
-      { id: "pose_20", name: "حركة الجري", prompt: "" },
-      { id: "pose_21", name: "ركبة مرفوعة", prompt: "" },
-      { id: "pose_22", name: "استلقاء فاخر", prompt: "" },
-      { id: "pose_23", name: "ذقن مدسوس", prompt: "" },
-      { id: "pose_24", name: "أذرع ممتدة", prompt: "" },
-      { id: "pose_25", name: "تمثال ساكن", prompt: "" },
-      { id: "pose_26", name: "هز الكتف", prompt: "" },
-      { id: "pose_27", name: "إمساك القلادة", prompt: "" },
-      { id: "pose_28", name: "سيولة الرقص", prompt: "" },
-      { id: "pose_29", name: "ميل على كرسي", prompt: "" },
-      { id: "pose_30", name: "يدان على الخصر", prompt: "" },
-      { id: "pose_31", name: "بروفايل جانبي", prompt: "" },
-      { id: "pose_32", name: "ركوع أنيق", prompt: "" },
-      { id: "pose_33", name: "عصف الرياح", prompt: "" },
-      { id: "pose_34", name: "شياكة عفوية", prompt: "" },
-      { id: "pose_35", name: "وضعية L", prompt: "" },
-      { id: "pose_36", name: "تأطير الوجه", prompt: "" },
-      { id: "pose_37", name: "تمدد أطراف", prompt: "" },
-      { id: "pose_38", name: "ضحك طبيعي", prompt: "" },
-      { id: "pose_39", name: "لمس المرآة", prompt: "" },
-      { id: "pose_40", name: "دوران المنصة", prompt: "" },
-      { id: "pose_41", name: "الانحناء الرسمي", prompt: "" },
-      { id: "pose_42", name: "تقاطع أرجل", prompt: "" },
-      { id: "pose_43", name: "لعب الظلال", prompt: "" },
-      { id: "pose_44", name: "رأس للخلف", prompt: "" },
-      { id: "pose_45", name: "حضن النفس", prompt: "" },
-      { id: "pose_46", name: "قفزة طافية", prompt: "" },
-      { id: "pose_47", name: "يد واحدة للأعلى", prompt: "" },
-      { id: "pose_48", name: "تعديل النظارة", prompt: "" },
-      { id: "pose_49", name: "ميل أطراف", prompt: "" },
-      { id: "pose_50", name: "بساطة هادئة", prompt: "" },
+      { id: "pose_11", name: "ثلاثة أرباع", prompt: "" },
+      { id: "pose_12", name: "ساقين متقاطعين", prompt: "" },
+      { id: "pose_13", name: "منحنى S", prompt: "" },
+      { id: "pose_14", name: "يد قرب الفم", prompt: "" },
+      { id: "pose_15", name: "جلوس أرضي", prompt: "" },
+      { id: "pose_16", name: "حركة ديناميكية", prompt: "" },
+      { id: "pose_17", name: "خط فك محدد", prompt: "" },
+      { id: "pose_18", name: "ظهر مقوس", prompt: "" },
+      { id: "pose_19", name: "يد على الكتف", prompt: "" },
+      { id: "pose_20", name: "إمالة الرأس", prompt: "" },
+      { id: "pose_21", name: "مشي", prompt: "" },
+      { id: "pose_22", name: "ذراعين مرفوعين", prompt: "" },
+      { id: "pose_23", name: "تفاعل بيئي", prompt: "" },
+      { id: "pose_24", name: "لمس الوجه", prompt: "" },
+      { id: "pose_25", name: "استلقاء", prompt: "" },
+      { id: "pose_26", name: "جلوس عفوي", prompt: "" },
+      { id: "pose_27", name: "الظهر", prompt: "" },
+      { id: "pose_28", name: "ميل على الحائط", prompt: "" },
+      { id: "pose_29", name: "يدين مشبوكين", prompt: "" },
+      { id: "pose_30", name: "ساق للأمام", prompt: "" },
+      { id: "pose_31", name: "ذقن لأسفل عيون لأعلى", prompt: "" },
+      { id: "pose_32", name: "كوع على ركبة", prompt: "" },
+      { id: "pose_33", name: "ركب مرفوعة", prompt: "" },
+      { id: "pose_34", name: "ساق واحدة مثنية", prompt: "" },
+      { id: "pose_35", name: "جلوس كنبة", prompt: "" },
+      { id: "pose_36", name: "استلقاء أنيق", prompt: "" },
+      { id: "pose_37", name: "ظهر مع ذراعين خلف", prompt: "" },
+      { id: "pose_38", name: "مرآة", prompt: "" },
+      { id: "pose_39", name: "ساقين متباعدين", prompt: "" },
+      { id: "pose_40", name: "جلوس على سلالم", prompt: "" },
+      { id: "pose_41", name: "ذراعين متقاطعين", prompt: "" },
+      { id: "pose_42", name: "تمدد", prompt: "" },
+      { id: "pose_43", name: "يد أنيقة", prompt: "" },
+      { id: "pose_44", name: "بروفايل جانبي", prompt: "" },
+      { id: "pose_45", name: "ميل على كوع", prompt: "" },
+      { id: "pose_46", name: "ساق على الحائط", prompt: "" },
+      { id: "pose_47", name: "كتف بزاوية", prompt: "" },
+      { id: "pose_48", name: "يد على الزي", prompt: "" },
+      { id: "pose_49", name: "نظرة فوق الكتف", prompt: "" },
+      { id: "pose_50", name: "ذراع مسترخي", prompt: "" },
     ],
 
     steps: [
