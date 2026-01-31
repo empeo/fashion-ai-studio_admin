@@ -13,6 +13,9 @@ const App: React.FC = () => {
   const [step, setStep] = useState(0);
   const [lang, setLang] = useState<"en" | "ar">("en");
   const [state, setState] = useState<ProjectState>(INITIAL_STATE);
+  const [userNotes, setUserNotes] = useState<string>("");
+  const [refinedNotes, setRefinedNotes] = useState<string>("");
+  const [isRefining, setIsRefining] = useState(false);
 
   const isAnyAnalyzing =
     state.environment.image.analysis.status === "loading" ||
@@ -131,6 +134,82 @@ const App: React.FC = () => {
     }
   };
 
+  // ✅ NEW: AI Refinement for User Notes
+  const refineUserNotes = async () => {
+    if (!userNotes.trim()) {
+      alert("Please enter some notes first!");
+      return;
+    }
+
+    setIsRefining(true);
+
+    try {
+      if (!GEMINI_KEY) {
+        throw new Error("Missing Gemini API key (VITE_GEMINI_API_KEY).");
+      }
+
+      const ai = new GoogleGenAI({ apiKey: GEMINI_KEY });
+
+      // Create context from current selections
+      const contextParts: string[] = [];
+
+      if (state.environment.sceneType)
+        contextParts.push(`Scene: ${state.environment.sceneType}`);
+      if (state.environment.mood)
+        contextParts.push(`Mood: ${state.environment.mood}`);
+      if (state.model.gender) contextParts.push(`Model: ${state.model.gender}`);
+      if (state.outfit.garmentType)
+        contextParts.push(`Garment: ${state.outfit.garmentType}`);
+      if (state.pose.selectedPoseId) {
+        const pose = translations.en.poses.find(
+          (p) => p.id === state.pose.selectedPoseId,
+        );
+        if (pose) contextParts.push(`Pose: ${pose.name}`);
+      }
+      if (state.lighting.lightingType)
+        contextParts.push(`Lighting: ${state.lighting.lightingType}`);
+
+      const context = contextParts.join(", ");
+
+      const refinementPrompt = `You are an expert AI prompt engineer specializing in fashion photography prompts for AI image generation (Midjourney, Stable Diffusion, DALL-E).
+
+Current Project Context: ${context}
+
+User's Raw Notes/Ideas:
+"${userNotes}"
+
+Your task: Transform the user's notes into professionally refined prompt additions that:
+1. Use technical photography and fashion terminology
+2. Are specific and descriptive (avoid vague terms)
+3. Complement the existing selections without contradicting them
+4. Follow AI image generation best practices
+5. Are formatted as comma-separated detailed descriptions
+
+IMPORTANT RULES:
+- Do NOT repeat what's already selected (${context})
+- Do NOT contradict existing selections
+- Focus on ADDITIONS and ENHANCEMENTS only
+- Use professional fashion/photography terminology
+- Be specific about colors, textures, lighting effects, props, atmosphere
+- Output ONLY the refined prompt text, no explanations or preamble
+
+Refined Prompt Addition:`;
+
+      const response = await ai.models.generateContent({
+        model: "gemini-3-flash-preview",
+        contents: [{ text: refinementPrompt }],
+      });
+
+      const refined = (response.text || "").trim();
+      setRefinedNotes(refined);
+    } catch (error: any) {
+      console.error("Refinement error:", error);
+      alert("Failed to refine notes: " + (error?.message || "Unknown error"));
+    } finally {
+      setIsRefining(false);
+    }
+  };
+
   const updateImage = (section: keyof ProjectState, file: File | null) => {
     setState((prev) => {
       const prevImage = (prev[section] as any).image as any;
@@ -160,225 +239,368 @@ const App: React.FC = () => {
     if (file) analyzeImage(section, file);
   };
 
-  // ✅ FIX #4: IMPROVED PROMPT GENERATION - Now includes ALL selections AND image analysis
+  // ✅ ENHANCED PROMPT GENERATION - ALL selections + image analysis + AI-refined notes
   const generatePrompt = () => {
     const s = state;
     const parts: string[] = [];
 
     // ========== 1. ENVIRONMENT ==========
-    let envPart = "";
+    const envParts: string[] = [];
 
-    // Check if user uploaded image with analysis
+    // User uploaded image analysis
     if (s.environment.image.isActive && s.environment.image.analysis.text) {
-      envPart = `Environment inspired by reference: ${s.environment.image.analysis.text}`;
+      envParts.push(
+        `Environment reference: ${s.environment.image.analysis.text}`,
+      );
     }
 
-    // Add selected options if chosen
-    if (s.environment.sceneType || s.environment.mood) {
-      const sceneDesc = s.environment.sceneType
-        ? s.environment.sceneType === "Studio"
-          ? "professional fashion studio with controlled lighting, neutral seamless background"
+    // Scene Type - ALWAYS include if selected
+    if (s.environment.sceneType) {
+      const sceneDesc =
+        s.environment.sceneType === "Studio"
+          ? "professional fashion studio with controlled lighting, neutral seamless background, cyclorama wall"
           : s.environment.sceneType === "Runway"
-            ? "dramatic fashion runway with stage lighting, dark audience area, elevated catwalk"
+            ? "dramatic fashion runway with stage lighting, dark audience area, elevated catwalk, spotlights"
             : s.environment.sceneType === "Street"
-              ? "urban street environment with natural daylight, authentic city textures"
+              ? "urban street environment with natural daylight, authentic city textures, architectural elements"
               : s.environment.sceneType === "Interior"
-                ? "luxury interior space with architectural details, ambient lighting"
-                : s.environment.sceneType
-        : "";
-
-      const moodDesc = s.environment.mood
-        ? s.environment.mood === "Clean"
-          ? "clean minimalist atmosphere"
-          : s.environment.mood === "Dramatic"
-            ? "dramatic high-contrast mood"
-            : s.environment.mood === "Minimal"
-              ? "minimal zen aesthetic"
-              : s.environment.mood === "Luxury"
-                ? "luxurious opulent ambiance"
-                : s.environment.mood
-        : "";
-
-      const combined = [sceneDesc, moodDesc].filter(Boolean).join(", ");
-      envPart = envPart
-        ? `${envPart}. Setting: ${combined}`
-        : `Environment: ${combined}`;
+                ? "luxury interior space with architectural details, ambient lighting, high-end furnishings"
+                : `${s.environment.sceneType} setting`;
+      envParts.push(sceneDesc);
     }
 
-    if (envPart) parts.push(envPart);
+    // Mood - ALWAYS include if selected
+    if (s.environment.mood) {
+      const moodDesc =
+        s.environment.mood === "Clean"
+          ? "clean minimalist atmosphere, bright and airy, pure aesthetic"
+          : s.environment.mood === "Dramatic"
+            ? "dramatic high-contrast mood, bold shadows, intense atmosphere"
+            : s.environment.mood === "Minimal"
+              ? "minimal zen aesthetic, empty space, subtle elegance"
+              : s.environment.mood === "Luxury"
+                ? "luxurious opulent ambiance, rich textures, sophisticated elegance"
+                : `${s.environment.mood} mood`;
+      envParts.push(moodDesc);
+    }
+
+    if (envParts.length > 0) {
+      parts.push(`Environment: ${envParts.join(", ")}`);
+    }
 
     // ========== 2. MODEL ==========
-    let modelPart = "";
+    const modelParts: string[] = [];
 
     // Image analysis
     if (s.model.image.isActive && s.model.image.analysis.text) {
-      modelPart = `Model inspired by reference: ${s.model.image.analysis.text}`;
+      modelParts.push(`Model reference: ${s.model.image.analysis.text}`);
     }
 
-    // Build from selections
-    const modelDetails: string[] = [];
-
-    // Always add skin realism for quality
-    modelDetails.push(
-      "natural realistic skin texture with visible pores and fine details, soft subsurface scattering, healthy skin appearance, no plastic or waxy finish",
+    // CRITICAL: Natural skin texture - ALWAYS add for quality
+    modelParts.push(
+      "natural realistic skin texture with visible pores and fine details, soft subsurface scattering, healthy skin appearance, natural skin imperfections, no plastic or waxy finish, photorealistic skin rendering",
     );
 
-    if (s.model.gender) modelDetails.push(`${s.model.gender} model`);
-    if (s.model.ageRange) modelDetails.push(`age ${s.model.ageRange}`);
-    if (s.model.bodyType)
-      modelDetails.push(
-        `${s.model.bodyType} body type with natural proportions`,
-      );
-    if (s.model.skinTone)
-      modelDetails.push(
-        `${s.model.skinTone} skin tone with accurate color preservation`,
-      );
-    if (s.model.facialStyle)
-      modelDetails.push(
-        `${s.model.facialStyle} facial features with well-defined structure`,
-      );
-    if (s.model.hairStyle) modelDetails.push(`${s.model.hairStyle} hairstyle`);
-
-    if (modelDetails.length > 1) {
-      // More than just skin realism
-      const combined = modelDetails.join(", ");
-      modelPart = modelPart
-        ? `${modelPart}. Details: ${combined}`
-        : `Model: ${combined}`;
+    // Gender - ALWAYS include if selected
+    if (s.model.gender) {
+      modelParts.push(`${s.model.gender} fashion model`);
     }
 
-    if (modelPart) parts.push(modelPart);
+    // Age Range - ALWAYS include if selected
+    if (s.model.ageRange) {
+      modelParts.push(`age range ${s.model.ageRange} years old`);
+    }
+
+    // Body Type - ALWAYS include if selected
+    if (s.model.bodyType) {
+      modelParts.push(
+        `${s.model.bodyType} body type with natural proportions and realistic anatomy`,
+      );
+    }
+
+    // Skin Tone - ALWAYS include if selected
+    if (s.model.skinTone) {
+      modelParts.push(
+        `${s.model.skinTone} skin tone with accurate color preservation and realistic undertones`,
+      );
+    }
+
+    // Facial Style - ALWAYS include if selected
+    if (s.model.facialStyle) {
+      const faceDesc =
+        s.model.facialStyle === "Editorial"
+          ? "editorial facial features with high cheekbones, defined jawline, strong bone structure"
+          : s.model.facialStyle === "Commercial"
+            ? "commercial approachable facial features, warm expression, relatable beauty"
+            : s.model.facialStyle === "Avant-Garde"
+              ? "avant-garde unique facial features, striking unconventional beauty, artistic expression"
+              : s.model.facialStyle === "Natural"
+                ? "natural classic beauty, soft features, timeless appeal"
+                : `${s.model.facialStyle} facial features`;
+      modelParts.push(faceDesc);
+    }
+
+    // Hair Style - ALWAYS include if selected
+    if (s.model.hairStyle) {
+      const hairDesc =
+        s.model.hairStyle === "Sleek Back"
+          ? "sleek hair pulled back tightly, smooth finish, polished appearance"
+          : s.model.hairStyle === "Flowing"
+            ? "flowing hair with natural movement, soft waves, dynamic volume"
+            : s.model.hairStyle === "Sculptural"
+              ? "sculptural architectural hairstyle, artistic shaping, bold structure"
+              : s.model.hairStyle === "Minimal"
+                ? "minimal simple hairstyle, understated elegance, clean lines"
+                : `${s.model.hairStyle} hairstyle`;
+      modelParts.push(hairDesc);
+    }
+
+    if (modelParts.length > 0) {
+      parts.push(`Model: ${modelParts.join(", ")}`);
+    }
 
     // ========== 3. OUTFIT ==========
-    let outfitPart = "";
+    const outfitParts: string[] = [];
 
     // Image analysis
     if (s.outfit.image.isActive && s.outfit.image.analysis.text) {
-      outfitPart = `Outfit matching reference: ${s.outfit.image.analysis.text}`;
+      outfitParts.push(
+        `Outfit reference (MUST match): ${s.outfit.image.analysis.text}`,
+      );
     }
 
-    // Build from selections
-    const outfitDetails: string[] = [];
-
-    if (s.outfit.garmentType) outfitDetails.push(s.outfit.garmentType);
-    if (s.outfit.colorPalette)
-      outfitDetails.push(`${s.outfit.colorPalette} color palette`);
-    if (s.outfit.fabric) outfitDetails.push(`${s.outfit.fabric} fabric`);
-    if (s.outfit.texture) outfitDetails.push(`${s.outfit.texture} finish`);
-    if (s.outfit.cut) outfitDetails.push(`${s.outfit.cut} cut and tailoring`);
-    if (s.outfit.details) outfitDetails.push(s.outfit.details);
-
-    if (outfitDetails.length > 0) {
-      outfitDetails.push("high-end construction with precise details");
-      const combined = outfitDetails.join(", ");
-      outfitPart = outfitPart
-        ? `${outfitPart}. Specifications: ${combined}`
-        : `Outfit: ${combined}`;
+    // Garment Type - ALWAYS include if selected
+    if (s.outfit.garmentType) {
+      const garmentDesc =
+        s.outfit.garmentType === "Gown"
+          ? "elegant evening gown with floor-length silhouette"
+          : s.outfit.garmentType === "Suit"
+            ? "tailored professional suit with structured shoulders"
+            : s.outfit.garmentType === "Streetwear"
+              ? "contemporary streetwear with urban aesthetic"
+              : s.outfit.garmentType === "Avant-Garde"
+                ? "avant-garde experimental fashion piece with artistic design"
+                : s.outfit.garmentType;
+      outfitParts.push(garmentDesc);
     }
 
-    if (outfitPart) parts.push(outfitPart);
+    // Color Palette - ALWAYS include if selected
+    if (s.outfit.colorPalette) {
+      outfitParts.push(
+        `${s.outfit.colorPalette} color scheme with precise color accuracy`,
+      );
+    }
+
+    // Fabric - ALWAYS include if selected
+    if (s.outfit.fabric) {
+      const fabricDesc =
+        s.outfit.fabric === "Silk"
+          ? "luxurious silk fabric with natural sheen and fluid drape"
+          : s.outfit.fabric === "Leather"
+            ? "premium leather with subtle grain texture and structured form"
+            : s.outfit.fabric === "Denim"
+              ? "high-quality denim with visible weave and natural texture"
+              : s.outfit.fabric === "Latex"
+                ? "glossy latex material with tight fit and reflective surface"
+                : s.outfit.fabric === "Wool"
+                  ? "fine wool fabric with soft texture and structured drape"
+                  : `${s.outfit.fabric} fabric`;
+      outfitParts.push(fabricDesc);
+    }
+
+    // Texture - ALWAYS include if selected
+    if (s.outfit.texture) {
+      outfitParts.push(
+        `${s.outfit.texture} finish with realistic material properties`,
+      );
+    }
+
+    // Cut - ALWAYS include if selected
+    if (s.outfit.cut) {
+      const cutDesc =
+        s.outfit.cut === "Fitted"
+          ? "fitted cut following body contours precisely"
+          : s.outfit.cut === "Oversized"
+            ? "oversized relaxed fit with intentional volume"
+            : s.outfit.cut === "Tailored"
+              ? "expertly tailored with perfect proportions and clean lines"
+              : s.outfit.cut === "Flowing"
+                ? "flowing loose cut with graceful movement"
+                : `${s.outfit.cut} cut`;
+      outfitParts.push(cutDesc);
+    }
+
+    // Details - ALWAYS include if selected
+    if (s.outfit.details) {
+      outfitParts.push(
+        `${s.outfit.details} design details with meticulous craftsmanship`,
+      );
+    }
+
+    // Always add quality statement
+    outfitParts.push(
+      "high-end construction with precise stitching and professional finishing",
+    );
+
+    if (outfitParts.length > 0) {
+      parts.push(`Outfit: ${outfitParts.join(", ")}`);
+    }
 
     // ========== 4. POSE ==========
-    let posePart = "";
+    const poseParts: string[] = [];
 
     // Image analysis
     if (s.pose.image.isActive && s.pose.image.analysis.text) {
-      posePart = `Pose inspired by reference: ${s.pose.image.analysis.text}`;
+      poseParts.push(`Pose reference: ${s.pose.image.analysis.text}`);
     }
 
-    // Build from selections
-    const poseDetails: string[] = [];
-
-    // Selected pose
+    // Selected pose - ALWAYS include if selected
     if (s.pose.selectedPoseId) {
       const selectedPose = translations.en.poses.find(
         (p) => p.id === s.pose.selectedPoseId,
       );
       if (selectedPose) {
-        poseDetails.push(selectedPose.prompt);
+        poseParts.push(selectedPose.prompt);
       }
     }
 
-    // Emphasis
+    // Emphasis - ALWAYS include if selected
     if (s.pose.emphasis.length > 0) {
-      poseDetails.push(`emphasizing ${s.pose.emphasis.join(", ")}`);
-    }
-
-    // Energy
-    if (s.pose.energy) {
-      poseDetails.push(`${s.pose.energy} energy and attitude`);
-    }
-
-    if (poseDetails.length > 0) {
-      poseDetails.push(
-        "anatomically accurate posture with natural joint angles",
+      poseParts.push(
+        `emphasizing and highlighting ${s.pose.emphasis.join(", ")} with intentional positioning`,
       );
-      const combined = poseDetails.join(", ");
-      posePart = posePart
-        ? `${posePart}. Style: ${combined}`
-        : `Pose: ${combined}`;
     }
 
-    if (posePart) parts.push(posePart);
+    // Energy - ALWAYS include if selected
+    if (s.pose.energy) {
+      poseParts.push(
+        `${s.pose.energy} energy and attitude throughout the pose`,
+      );
+    }
+
+    // Always add anatomical accuracy
+    poseParts.push(
+      "anatomically correct posture with natural joint angles and realistic body mechanics",
+    );
+
+    if (poseParts.length > 0) {
+      parts.push(`Pose: ${poseParts.join(", ")}`);
+    }
 
     // ========== 5. LIGHTING & CAMERA ==========
-    let lightingPart = "";
+    const lightingParts: string[] = [];
 
     // Image analysis
     if (s.lighting.image.isActive && s.lighting.image.analysis.text) {
-      lightingPart = `Lighting inspired by reference: ${s.lighting.image.analysis.text}`;
+      lightingParts.push(
+        `Lighting reference: ${s.lighting.image.analysis.text}`,
+      );
     }
 
-    // Build from selections
-    const lightingDetails: string[] = [];
-
+    // Lighting Type - ALWAYS include if selected
     if (s.lighting.lightingType) {
       const lightDesc =
         s.lighting.lightingType === "Soft Box"
-          ? "soft diffused studio lighting with even illumination, gentle shadows"
+          ? "soft box studio lighting with even diffused illumination, gentle wraparound light, minimal harsh shadows"
           : s.lighting.lightingType === "Hard Rim"
-            ? "hard rim lighting with defined edges, dramatic highlights"
+            ? "hard rim lighting with sharp defined edges, dramatic edge highlights, strong directional light"
             : s.lighting.lightingType === "High Key"
-              ? "high key lighting with minimal shadows, bright even exposure"
+              ? "high key lighting setup with bright even exposure, minimal shadows, clean bright atmosphere"
               : s.lighting.lightingType === "Chiaroscuro"
-                ? "chiaroscuro lighting with strong contrast, deep shadows"
-                : s.lighting.lightingType;
-
-      lightingDetails.push(lightDesc);
+                ? "chiaroscuro lighting with strong dramatic contrast, deep rich shadows, Renaissance-style illumination"
+                : `${s.lighting.lightingType} lighting`;
+      lightingParts.push(lightDesc);
     }
 
-    if (s.lighting.shadowIntensity)
-      lightingDetails.push(`${s.lighting.shadowIntensity} shadow intensity`);
-    if (s.lighting.lens)
-      lightingDetails.push(`shot with ${s.lighting.lens} lens`);
-    if (s.lighting.shotType)
-      lightingDetails.push(`${s.lighting.shotType} framing`);
-
-    if (lightingDetails.length > 0) {
-      lightingDetails.push("professional photography depth of field");
-      const combined = lightingDetails.join(", ");
-      lightingPart = lightingPart
-        ? `${lightingPart}. Technical setup: ${combined}`
-        : `Lighting & Camera: ${combined}`;
+    // Shadow Intensity - ALWAYS include if selected
+    if (s.lighting.shadowIntensity) {
+      lightingParts.push(
+        `${s.lighting.shadowIntensity} shadow intensity with realistic shadow falloff`,
+      );
     }
 
-    if (lightingPart) parts.push(lightingPart);
+    // Lens - ALWAYS include if selected
+    if (s.lighting.lens) {
+      const lensDesc =
+        s.lighting.lens === "35mm"
+          ? "shot with 35mm lens, moderate wide angle, natural perspective"
+          : s.lighting.lens === "50mm"
+            ? "shot with 50mm lens, natural field of view, true-to-life perspective"
+            : s.lighting.lens === "85mm"
+              ? "shot with 85mm portrait lens, slight compression, flattering perspective"
+              : s.lighting.lens === "135mm"
+                ? "shot with 135mm telephoto lens, strong compression, shallow depth of field"
+                : `shot with ${s.lighting.lens} lens`;
+      lightingParts.push(lensDesc);
+    }
+
+    // Shot Type - ALWAYS include if selected
+    if (s.lighting.shotType) {
+      lightingParts.push(
+        `${s.lighting.shotType} framing with professional composition`,
+      );
+    }
+
+    // Always add technical photography details
+    lightingParts.push(
+      "professional photography depth of field, bokeh, accurate exposure, color grading",
+    );
+
+    if (lightingParts.length > 0) {
+      parts.push(`Lighting & Camera: ${lightingParts.join(", ")}`);
+    }
 
     // ========== 6. QUALITY & STYLE ==========
-    const qualityDetails: string[] = [];
+    const qualityParts: string[] = [];
 
-    if (s.quality.realismLevel)
-      qualityDetails.push(`${s.quality.realismLevel} rendering quality`);
-    if (s.quality.style)
-      qualityDetails.push(`${s.quality.style} fashion photography style`);
-    if (s.quality.imageQuality)
-      qualityDetails.push(`${s.quality.imageQuality} resolution`);
+    // Realism Level - ALWAYS include if selected
+    if (s.quality.realismLevel) {
+      const realismDesc =
+        s.quality.realismLevel === "Hyper-realistic"
+          ? "hyper-realistic photorealistic rendering with extreme detail and lifelike quality"
+          : s.quality.realismLevel === "Cinematic"
+            ? "cinematic film-like quality with professional color grading and mood"
+            : s.quality.realismLevel === "Raw Photography"
+              ? "raw unprocessed photography aesthetic with natural authentic look"
+              : `${s.quality.realismLevel} rendering quality`;
+      qualityParts.push(realismDesc);
+    }
 
-    if (qualityDetails.length > 0) {
-      qualityDetails.push(
-        "ultra high resolution, editorial magazine quality, cinematic color grading, professional retouching",
+    // Style - ALWAYS include if selected
+    if (s.quality.style) {
+      const styleDesc =
+        s.quality.style === "Editorial"
+          ? "editorial high-fashion magazine photography style, artistic and bold"
+          : s.quality.style === "Commercial"
+            ? "commercial catalog photography style, clean and marketable"
+            : s.quality.style === "Artistic"
+              ? "artistic conceptual photography style, creative and experimental"
+              : s.quality.style === "Documentary"
+                ? "documentary authentic photography style, realistic and candid"
+                : `${s.quality.style} photography style`;
+      qualityParts.push(styleDesc);
+    }
+
+    // Image Quality - ALWAYS include if selected
+    if (s.quality.imageQuality) {
+      qualityParts.push(
+        `${s.quality.imageQuality} ultra high resolution output`,
       );
-      parts.push(`Quality: ${qualityDetails.join(", ")}`);
+    }
+
+    // Always add professional quality markers
+    qualityParts.push(
+      "professional fashion photography quality, editorial magazine standard, expert retouching, cinematic color grading, masterpiece composition",
+    );
+
+    if (qualityParts.length > 0) {
+      parts.push(`Quality: ${qualityParts.join(", ")}`);
+    }
+
+    // ========== 7. USER REFINEMENTS (AI-Enhanced) ==========
+    const notesToUse = refinedNotes.trim() || userNotes.trim();
+    if (notesToUse) {
+      parts.push(`Additional refinements: ${notesToUse}`);
     }
 
     // ========== PLATFORM-SPECIFIC OPTIMIZATIONS ==========
@@ -387,14 +609,16 @@ const App: React.FC = () => {
       platformSuffix =
         " --style raw --stylize 200 --quality 2 --ar 2:3 --v 6.1";
     } else if (s.targetPlatform === "Stable Diffusion") {
-      platformSuffix = ", masterpiece, best quality, highly detailed, 8k uhd";
+      platformSuffix =
+        ", masterpiece, best quality, highly detailed, professional photography, 8k uhd, dslr";
     } else if (s.targetPlatform === "DALL-E") {
-      platformSuffix = ", photorealistic, professional photography";
+      platformSuffix =
+        ", photorealistic, professional studio photography, high-end fashion editorial";
     }
 
     return parts.length > 0
       ? parts.join(",\n\n") + platformSuffix
-      : "Please select options to generate a prompt.";
+      : "Please select options and configure your project to generate a prompt.";
   };
 
   const getNegativePrompt = () => {
@@ -851,11 +1075,7 @@ const App: React.FC = () => {
               {
                 label: t.labels.cut,
                 options: [
-                  {
-                    value: "Fitted",
-                    label: t.options.cut.Fitted,
-                    image: styleImg("cut", "Fitted"),
-                  },
+                  { value: "Fitted", label: t.options.cut.Fitted },
                   { value: "Oversized", label: t.options.cut.Oversized },
                   { value: "Tailored", label: t.options.cut.Tailored },
                   { value: "Flowing", label: t.options.cut.Flowing },
@@ -1319,6 +1539,95 @@ const App: React.FC = () => {
               {t.steps[7]}
             </h2>
 
+            {/* User Notes / Refinements Section */}
+            <div className="space-y-4 p-6 glass-card border border-white/20 bg-white/5">
+              <div className="flex items-center justify-between mb-2">
+                <label className="block text-[10px] uppercase tracking-widest text-gray-400">
+                  <i className="fa-solid fa-pen-to-square mr-2"></i>
+                  Additional Notes & Refinements
+                </label>
+                {userNotes.trim() && (
+                  <button
+                    onClick={() => {
+                      setUserNotes("");
+                      setRefinedNotes("");
+                    }}
+                    className="text-[9px] uppercase tracking-widest text-gray-500 hover:text-white transition-colors"
+                  >
+                    Clear All
+                  </button>
+                )}
+              </div>
+
+              <textarea
+                value={userNotes}
+                onChange={(e) => setUserNotes(e.target.value)}
+                placeholder="Add your creative ideas, specific details, or modifications...
+
+Examples:
+• Add vintage film grain effect
+• Make the lighting more golden hour
+• Include oversized sunglasses
+• Emphasize fabric texture
+• Add red color accent in background"
+                className="w-full bg-black/40 border border-white/10 rounded-lg p-4 text-sm text-gray-300 leading-relaxed font-light placeholder:text-gray-600 placeholder:text-xs focus:border-white/30 focus:outline-none transition-all min-h-[100px] resize-y"
+                style={{ fontFamily: "monospace" }}
+              />
+
+              <button
+                onClick={refineUserNotes}
+                disabled={!userNotes.trim() || isRefining}
+                className={`w-full py-3 px-4 rounded-lg uppercase tracking-widest text-[10px] font-bold transition-all duration-300 flex items-center justify-center gap-2 ${
+                  !userNotes.trim() || isRefining
+                    ? "bg-white/10 text-gray-600 cursor-not-allowed"
+                    : "bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700 hover:to-blue-700 shadow-lg hover:shadow-xl"
+                }`}
+              >
+                {isRefining ? (
+                  <>
+                    <i className="fa-solid fa-spinner fa-spin"></i>
+                    AI is refining your notes...
+                  </>
+                ) : (
+                  <>
+                    <i className="fa-solid fa-wand-magic-sparkles"></i>
+                    Enhance with AI
+                  </>
+                )}
+              </button>
+
+              {refinedNotes && (
+                <div className="mt-4 p-4 bg-gradient-to-br from-purple-900/20 to-blue-900/20 border border-purple-500/30 rounded-lg">
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="text-[9px] uppercase tracking-widest text-purple-300 flex items-center gap-2">
+                      <i className="fa-solid fa-sparkles"></i>
+                      AI-Enhanced Version
+                    </label>
+                    <button
+                      onClick={() => {
+                        setUserNotes(refinedNotes);
+                        setRefinedNotes("");
+                      }}
+                      className="text-[9px] uppercase tracking-widest text-purple-400 hover:text-purple-200 transition-colors"
+                    >
+                      Use This
+                    </button>
+                  </div>
+                  <p
+                    className="text-xs text-gray-300 leading-relaxed font-light"
+                    style={{ fontFamily: "monospace" }}
+                  >
+                    {refinedNotes}
+                  </p>
+                </div>
+              )}
+
+              <p className="text-[9px] text-gray-600 uppercase tracking-widest flex items-center gap-2">
+                <i className="fa-solid fa-lightbulb"></i>
+                AI will transform your notes into professional prompt additions
+              </p>
+            </div>
+
             <div className="space-y-4">
               <label className="block text-[10px] uppercase tracking-widest text-gray-500">
                 {t.masterPrompt}
@@ -1379,7 +1688,18 @@ const App: React.FC = () => {
                 onClick={() => {
                   const dataStr =
                     "data:text/json;charset=utf-8," +
-                    encodeURIComponent(JSON.stringify(state, null, 2));
+                    encodeURIComponent(
+                      JSON.stringify(
+                        {
+                          ...state,
+                          userNotes: userNotes,
+                          finalPrompt: finalPrompt,
+                          negativePrompt: neg,
+                        },
+                        null,
+                        2,
+                      ),
+                    );
                   const a = document.createElement("a");
                   a.setAttribute("href", dataStr);
                   a.setAttribute(
