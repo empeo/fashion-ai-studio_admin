@@ -1075,7 +1075,7 @@ Refined Prompt Addition:`;
               {
                 label: t.labels.cut,
                 options: [
-                  { value: "Fitted", label: t.options.cut.Fitted },
+                  { value: "Fitted", label: t.options.cut.Fitted, image: styleImg("cut", "Fitted") },
                   { value: "Oversized", label: t.options.cut.Oversized },
                   { value: "Tailored", label: t.options.cut.Tailored },
                   { value: "Flowing", label: t.options.cut.Flowing },
