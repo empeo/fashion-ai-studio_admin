@@ -74,55 +74,54 @@ export interface ProjectState {
   };
 }
 
-// ✅ FIX #1: NO DEFAULT SELECTIONS - User must choose everything
 export const INITIAL_STATE: Readonly<ProjectState> = {
   projectName: "",
   targetPlatform: "Midjourney",
 
   environment: {
-    sceneType: "", // ✅ Empty by default
-    mood: "", // ✅ Empty by default
+    sceneType: "",
+    mood: "",
     image: createImageData("Background & Lighting Inspiration"),
   },
 
   model: {
-    gender: "", // ✅ Empty by default
-    ageRange: "", // ✅ Empty by default
-    bodyType: "", // ✅ Empty by default
-    skinTone: "", // ✅ Empty by default
-    facialStyle: "", // ✅ Empty by default
-    hairStyle: "", // ✅ Empty by default
+    gender: "",
+    ageRange: "",
+    bodyType: "",
+    skinTone: "",
+    facialStyle: "",
+    hairStyle: "",
     image: createImageData("Face & Body Proportions"),
   },
 
   outfit: {
-    garmentType: "", // ✅ Empty by default
-    cut: "", // ✅ Empty by default
-    fabric: "", // ✅ Empty by default
-    texture: "", // ✅ Empty by default
-    colorPalette: "", // ✅ Empty by default
-    details: "", // ✅ Empty by default
+    garmentType: "",
+    cut: "",
+    fabric: "",
+    texture: "",
+    colorPalette: "",
+    details: "",
     image: createImageData("Design & Silhouette Reference"),
   },
 
   pose: {
-    selectedPoseId: "", // ✅ Empty by default
+    selectedPoseId: "",
     emphasis: [],
-    energy: "", // ✅ Empty by default
+    energy: "",
     image: createImageData("Pose Reference"),
   },
 
   lighting: {
-    lightingType: "", // ✅ Empty by default
-    shadowIntensity: "", // ✅ Empty by default
-    lens: "", // ✅ Empty by default
-    shotType: "", // ✅ Empty by default
+    lightingType: "",
+    shadowIntensity: "",
+    lens: "",
+    shotType: "",
     image: createImageData("Lighting Reference"),
   },
 
   quality: {
-    realismLevel: "", // ✅ Empty by default
-    style: "", // ✅ Empty by default
-    imageQuality: "", // ✅ Empty by default
+    realismLevel: "",
+    style: "",
+    imageQuality: "",
   },
 };
