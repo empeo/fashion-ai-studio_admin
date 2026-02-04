@@ -550,7 +550,7 @@ options: {
 **Solutions**:
 - ✅ Verify `VITE_GEMINI_API_KEY` in `.env`
 - ✅ Check API key is valid at [Google AI Studio](https://makersuite.google.com/)
-- ✅ Ensure image is under 10MB
+- ✅ Ensure image is under 30MB
 - ✅ Check browser console for detailed error
 - ✅ Verify image format (JPEG, PNG, WEBP supported)
 
@@ -723,26 +723,10 @@ SOFTWARE.
 
 ### Team
 
-- **Project Lead**: Your Name
-- **UI/UX Design**: Your Name
-- **AI Integration**: Your Name
-- **Documentation**: Your Name
-
----
-
-## 📞 Support
-
-### Get Help
-
-- 📧 **Email**: support@fabusse.com
-- 💬 **Discord**: [Join our community](https://discord.gg/fabusse)
-- 🐦 **Twitter**: [@fabusse](https://twitter.com/fabusse)
-- 📚 **Documentation**: [docs.fabusse.com](https://docs.fabusse.com)
-
-### Professional Services
-
-Need custom development or integration?
-Contact us at: business@fabusse.com
+- **Project Lead**: Abanoub Emad Felix
+- **UI/UX Design**: Arsany Alkes Rafael - Gerges Emad Felix
+- **AI Integration**: George Alkes Rafael - Abanoub Emad Felix
+- **React + Vite**: George Alkes Rafael - Abanoub Emad Felix
 
 ---
 
@@ -786,8 +770,6 @@ If you find FABUSSE useful, please consider:
 
 *Designed for Excellence • Built for Professionals*
 
-[Website](https://fabusse.com) • [Documentation](https://docs.fabusse.com) • [Discord](https://discord.gg/fabusse)
-
-© 2024 FABUSSE. All rights reserved.
+© 2025 FABUSSE. All rights reserved.
 
 </div>
